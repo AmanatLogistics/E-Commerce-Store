@@ -1,0 +1,162 @@
+---
+const { title = 'Shipment Tracker', admin = false } = Astro.props;
+const path = Astro.url.pathname;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/">📦 Amanat Tracker</a>
+      <nav>
+        {admin ? (
+          <>
+            <a href="/admin" class={path === '/admin' ? 'active' : ''}>Shipments</a>
+            <a href="/admin/new" class={path === '/admin/new' ? 'active' : ''}>Add New</a>
+            <a href="/">Client View</a>
+            <form method="post" action="/admin/logout" class="inline">
+              <button type="submit" class="link-button">Log out</button>
+            </form>
+          </>
+        ) : (
+          <a href="/admin">Admin Panel</a>
+        )}
+      </nav>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer>Demo tracker &middot; data lives in a Google Sheet</footer>
+
+    <style is:global>
+      :root {
+        --bg: #f4f6f8;
+        --card: #ffffff;
+        --ink: #1b2430;
+        --muted: #6b7785;
+        --line: #dfe4ea;
+        --brand: #0f4c81;
+        --brand-soft: #e8f0f7;
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+        background: var(--bg);
+        color: var(--ink);
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+      }
+      .topbar {
+        background: var(--brand);
+        color: #fff;
+        padding: 0.9rem 1.25rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .brand { color: #fff; font-weight: 700; font-size: 1.1rem; text-decoration: none; }
+      .topbar nav { display: flex; gap: 1rem; align-items: center; }
+      .topbar nav a { color: #cfe0ee; text-decoration: none; font-size: 0.95rem; }
+      .topbar nav a:hover, .topbar nav a.active { color: #fff; text-decoration: underline; }
+      .inline { display: inline; margin: 0; }
+      .link-button {
+        background: none; border: 0; color: #cfe0ee; cursor: pointer;
+        font: inherit; font-size: 0.95rem; padding: 0;
+      }
+      .link-button:hover { color: #fff; text-decoration: underline; }
+
+      main { flex: 1; width: min(920px, 100%); margin: 0 auto; padding: 1.75rem 1.25rem 3rem; }
+      footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding: 1.25rem; }
+
+      h1 { font-size: 1.6rem; margin: 0 0 0.35rem; }
+      h2 { font-size: 1.15rem; margin: 0 0 0.75rem; }
+      .subtitle { color: var(--muted); margin: 0 0 1.5rem; }
+
+      .card {
+        background: var(--card);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 1.25rem;
+        margin-bottom: 1.25rem;
+      }
+
+      label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 0.3rem; }
+      input, select, textarea {
+        width: 100%;
+        padding: 0.6rem 0.7rem;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        font: inherit;
+        background: #fff;
+        color: var(--ink);
+      }
+      input:focus, select:focus, textarea:focus { outline: 2px solid var(--brand); border-color: var(--brand); }
+      .field { margin-bottom: 0.9rem; }
+      .grid { display: grid; gap: 0.9rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+
+      button.primary, .button {
+        display: inline-block;
+        background: var(--brand);
+        color: #fff;
+        border: 0;
+        border-radius: 7px;
+        padding: 0.65rem 1.15rem;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+        text-decoration: none;
+      }
+      button.primary:hover, .button:hover { background: #0c3d68; }
+      button.danger { background: #fff; color: #b3261e; border: 1px solid #e5b6b2; border-radius: 7px; padding: 0.55rem 1rem; font: inherit; cursor: pointer; }
+      button.danger:hover { background: #fdeceb; }
+
+      table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+      th, td { text-align: left; padding: 0.6rem 0.5rem; border-bottom: 1px solid var(--line); }
+      th { color: var(--muted); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.04em; }
+      .table-wrap { overflow-x: auto; }
+
+      .badge {
+        display: inline-block; padding: 0.2rem 0.6rem; border-radius: 999px;
+        font-size: 0.78rem; font-weight: 600; white-space: nowrap;
+        background: var(--brand-soft); color: var(--brand);
+      }
+      .badge.green { background: #e3f5e9; color: #146c43; }
+      .badge.amber { background: #fdf1dc; color: #8a5a00; }
+      .badge.red   { background: #fdeceb; color: #b3261e; }
+      .badge.grey  { background: #eceff2; color: #55606c; }
+
+      .notice { padding: 0.75rem 1rem; border-radius: 8px; margin-bottom: 1.25rem; font-size: 0.92rem; }
+      .notice.error { background: #fdeceb; color: #b3261e; }
+      .notice.ok { background: #e3f5e9; color: #146c43; }
+      .notice.info { background: var(--brand-soft); color: var(--brand); }
+
+      .timeline { list-style: none; margin: 0; padding: 0; }
+      .timeline li { border-left: 2px solid var(--line); padding: 0 0 1.1rem 1.1rem; position: relative; }
+      .timeline li:last-child { padding-bottom: 0; }
+      .timeline li::before {
+        content: ''; position: absolute; left: -7px; top: 4px;
+        width: 12px; height: 12px; border-radius: 50%;
+        background: var(--line);
+      }
+      .timeline li:first-child::before { background: var(--brand); }
+      .timeline .when { color: var(--muted); font-size: 0.82rem; }
+      .timeline .what { font-weight: 600; }
+      .timeline .where { color: var(--muted); font-size: 0.88rem; }
+
+      .muted { color: var(--muted); }
+      .row-actions { display: flex; gap: 0.5rem; align-items: center; }
+      .stack { display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center; }
+    </style>
+  </body>
+</html>

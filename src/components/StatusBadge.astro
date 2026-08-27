@@ -1,0 +1,14 @@
+---
+const { status = '' } = Astro.props;
+
+const tone = {
+  'Delivered': 'green',
+  'Out for Delivery': 'amber',
+  'In Transit': '',
+  'At Warehouse': '',
+  'Picked Up': '',
+  'On Hold': 'red',
+  'Pending': 'grey',
+}[status] ?? '';
+---
+<span class={`badge ${tone}`}>{status || '—'}</span>

@@ -1,0 +1,34 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { checkPassword, login, isLoggedIn } from '../../lib/auth.js';
+
+let error = '';
+
+if (isLoggedIn(Astro.cookies)) {
+  return Astro.redirect('/admin');
+}
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  if (checkPassword(form.get('password'))) {
+    login(Astro.cookies);
+    return Astro.redirect('/admin');
+  }
+  error = 'Wrong password.';
+}
+---
+
+<Layout title="Admin login">
+  <h1>Admin login</h1>
+  <p class="subtitle">Enter the admin password to manage shipments.</p>
+
+  {error && <p class="notice error">{error}</p>}
+
+  <form method="post" class="card" style="max-width:380px">
+    <div class="field">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" required autofocus />
+    </div>
+    <button class="primary" type="submit">Log in</button>
+  </form>
+</Layout>

@@ -1,0 +1,100 @@
+---
+import Layout from '../layouts/Layout.astro';
+import StatusBadge from '../components/StatusBadge.astro';
+import { getShipment, listEvents } from '../lib/store.js';
+import { USING_SHEETS } from '../lib/config.js';
+
+const query = (Astro.url.searchParams.get('tracking') ?? '').trim();
+
+let shipment = null;
+let events = [];
+let error = '';
+
+if (query) {
+  try {
+    shipment = await getShipment(query);
+    if (shipment) {
+      events = await listEvents(shipment.tracking);
+    } else {
+      error = `No shipment found for "${query}". Please check the number and try again.`;
+    }
+  } catch (e) {
+    error = `Could not reach the sheet: ${e.message}`;
+  }
+}
+---
+
+<Layout title="Track your shipment">
+  <h1>Track your shipment</h1>
+  <p class="subtitle">Enter the tracking number printed on your receipt.</p>
+
+  <form method="get" class="card">
+    <div class="stack">
+      <div style="flex:1 1 240px">
+        <label for="tracking">Tracking number</label>
+        <input id="tracking" name="tracking" value={query} placeholder="AMT-1001" required />
+      </div>
+      <button class="primary" type="submit" style="align-self:flex-end">Track</button>
+    </div>
+  </form>
+
+  {error && <p class="notice error">{error}</p>}
+
+  {shipment && (
+    <>
+      <div class="card">
+        <div class="stack" style="justify-content:space-between">
+          <div>
+            <h2 style="margin-bottom:0.2rem">{shipment.tracking}</h2>
+            <p class="muted" style="margin:0">
+              {shipment.origin} &rarr; {shipment.destination}
+            </p>
+          </div>
+          <StatusBadge status={shipment.status} />
+        </div>
+
+        <div class="grid" style="margin-top:1.25rem">
+          <div>
+            <div class="muted" style="font-size:0.8rem">Customer</div>
+            <div>{shipment.customer || '—'}</div>
+          </div>
+          <div>
+            <div class="muted" style="font-size:0.8rem">Expected delivery</div>
+            <div>{shipment.eta || '—'}</div>
+          </div>
+          <div>
+            <div class="muted" style="font-size:0.8rem">Last updated</div>
+            <div>{shipment.updated || '—'}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Tracking history</h2>
+        {events.length === 0 ? (
+          <p class="muted">No updates recorded yet.</p>
+        ) : (
+          <ul class="timeline">
+            {events.map((event) => (
+              <li>
+                <div class="when">{event.date}</div>
+                <div class="what">{event.status}</div>
+                <div class="where">
+                  {event.location}{event.note ? ` — ${event.note}` : ''}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </>
+  )}
+
+  {!USING_SHEETS && (
+    <p class="notice info">
+      Running in demo mode with sample data in <code>data/demo-data.json</code>.
+      Add your Google credentials to <code>.env</code> to switch to the sheet.
+      Try tracking number <strong>AMT-1001</strong>.
+    </p>
+  )}
+</Layout>

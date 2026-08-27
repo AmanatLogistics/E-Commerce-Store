@@ -1,0 +1,159 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { getShipment, updateShipment, listEvents, addEvent } from '../../lib/store.js';
+import { STATUSES } from '../../lib/config.js';
+
+const { tracking } = Astro.params;
+
+let message = '';
+let error = '';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const action = form.get('action');
+
+  try {
+    if (action === 'update-status') {
+      // One tracking update = a new history row plus the shipment's own status.
+      await addEvent({
+        tracking,
+        location: form.get('location'),
+        status: form.get('status'),
+        note: form.get('note'),
+      });
+      await updateShipment(tracking, { status: form.get('status') });
+      message = 'Tracking update added.';
+    } else if (action === 'edit-details') {
+      await updateShipment(tracking, {
+        customer: form.get('customer'),
+        phone: form.get('phone'),
+        origin: form.get('origin'),
+        destination: form.get('destination'),
+        eta: form.get('eta'),
+      });
+      message = 'Shipment details saved.';
+    }
+  } catch (e) {
+    error = e.message;
+  }
+}
+
+if (Astro.url.searchParams.has('created')) {
+  message = 'Shipment created.';
+}
+
+let shipment = null;
+let events = [];
+
+try {
+  shipment = await getShipment(tracking);
+  if (shipment) events = await listEvents(tracking);
+} catch (e) {
+  error = `Could not read the sheet: ${e.message}`;
+}
+---
+
+<Layout title={`Admin · ${tracking}`} admin={true}>
+  {!shipment ? (
+    <>
+      <h1>Not found</h1>
+      <p class="notice error">No shipment with tracking number “{tracking}”.</p>
+      <a class="button" href="/admin">Back to list</a>
+    </>
+  ) : (
+    <>
+      <div class="stack" style="justify-content:space-between">
+        <div>
+          <h1 style="margin-bottom:0.2rem">{shipment.tracking}</h1>
+          <p class="muted" style="margin:0">
+            {shipment.origin} &rarr; {shipment.destination} &middot; last updated {shipment.updated || '—'}
+          </p>
+        </div>
+        <StatusBadge status={shipment.status} />
+      </div>
+      <p class="subtitle" style="margin-top:0.75rem">
+        <a href="/admin">&larr; Back to all shipments</a>
+        &middot;
+        <a href={`/?tracking=${encodeURIComponent(shipment.tracking)}`}>See client view</a>
+      </p>
+
+      {message && <p class="notice ok">{message}</p>}
+      {error && <p class="notice error">{error}</p>}
+
+      <form method="post" class="card">
+        <h2>Add tracking update</h2>
+        <p class="muted" style="margin-top:0">
+          Adds a row to the Events tab and moves the shipment to the new status.
+        </p>
+        <input type="hidden" name="action" value="update-status" />
+        <div class="grid">
+          <div class="field">
+            <label for="status">New status</label>
+            <select id="status" name="status">
+              {STATUSES.map((status) => (
+                <option value={status} selected={shipment.status === status}>{status}</option>
+              ))}
+            </select>
+          </div>
+          <div class="field">
+            <label for="location">Location</label>
+            <input id="location" name="location" placeholder="Sukkur" required />
+          </div>
+          <div class="field">
+            <label for="note">Note</label>
+            <input id="note" name="note" placeholder="Departed transit hub" />
+          </div>
+        </div>
+        <button class="primary" type="submit">Add update</button>
+      </form>
+
+      <form method="post" class="card">
+        <h2>Edit shipment details</h2>
+        <input type="hidden" name="action" value="edit-details" />
+        <div class="grid">
+          <div class="field">
+            <label for="customer">Customer name</label>
+            <input id="customer" name="customer" value={shipment.customer} required />
+          </div>
+          <div class="field">
+            <label for="phone">Phone</label>
+            <input id="phone" name="phone" value={shipment.phone} />
+          </div>
+          <div class="field">
+            <label for="origin">Origin</label>
+            <input id="origin" name="origin" value={shipment.origin} required />
+          </div>
+          <div class="field">
+            <label for="destination">Destination</label>
+            <input id="destination" name="destination" value={shipment.destination} required />
+          </div>
+          <div class="field">
+            <label for="eta">Expected delivery</label>
+            <input id="eta" name="eta" type="date" value={shipment.eta} />
+          </div>
+        </div>
+        <button class="primary" type="submit">Save details</button>
+      </form>
+
+      <div class="card">
+        <h2>Tracking history</h2>
+        {events.length === 0 ? (
+          <p class="muted">No updates recorded yet.</p>
+        ) : (
+          <ul class="timeline">
+            {events.map((event) => (
+              <li>
+                <div class="when">{event.date}</div>
+                <div class="what">{event.status}</div>
+                <div class="where">
+                  {event.location}{event.note ? ` — ${event.note}` : ''}
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </>
+  )}
+</Layout>

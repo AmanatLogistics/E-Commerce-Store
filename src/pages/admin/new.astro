@@ -1,0 +1,77 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { createShipment } from '../../lib/store.js';
+import { STATUSES } from '../../lib/config.js';
+
+let error = '';
+let values = { status: 'Pending' };
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  values = Object.fromEntries(form);
+
+  try {
+    const shipment = await createShipment({
+      tracking: String(values.tracking ?? '').trim(),
+      customer: values.customer,
+      phone: values.phone,
+      origin: values.origin,
+      destination: values.destination,
+      status: values.status,
+      eta: values.eta,
+    });
+    return Astro.redirect(`/admin/${encodeURIComponent(shipment.tracking)}?created=1`);
+  } catch (e) {
+    error = e.message;
+  }
+}
+---
+
+<Layout title="Admin · Add shipment" admin={true}>
+  <h1>Add shipment</h1>
+  <p class="subtitle">This adds one row to the Shipments tab of your sheet.</p>
+
+  {error && <p class="notice error">{error}</p>}
+
+  <form method="post" class="card">
+    <div class="grid">
+      <div class="field">
+        <label for="tracking">Tracking number</label>
+        <input id="tracking" name="tracking" value={values.tracking ?? ''} placeholder="AMT-1003" required />
+      </div>
+      <div class="field">
+        <label for="customer">Customer name</label>
+        <input id="customer" name="customer" value={values.customer ?? ''} required />
+      </div>
+      <div class="field">
+        <label for="phone">Phone</label>
+        <input id="phone" name="phone" value={values.phone ?? ''} />
+      </div>
+      <div class="field">
+        <label for="origin">Origin</label>
+        <input id="origin" name="origin" value={values.origin ?? ''} required />
+      </div>
+      <div class="field">
+        <label for="destination">Destination</label>
+        <input id="destination" name="destination" value={values.destination ?? ''} required />
+      </div>
+      <div class="field">
+        <label for="status">Status</label>
+        <select id="status" name="status">
+          {STATUSES.map((status) => (
+            <option value={status} selected={values.status === status}>{status}</option>
+          ))}
+        </select>
+      </div>
+      <div class="field">
+        <label for="eta">Expected delivery</label>
+        <input id="eta" name="eta" type="date" value={values.eta ?? ''} />
+      </div>
+    </div>
+
+    <div class="stack">
+      <button class="primary" type="submit">Save shipment</button>
+      <a class="muted" href="/admin">Cancel</a>
+    </div>
+  </form>
+</Layout>

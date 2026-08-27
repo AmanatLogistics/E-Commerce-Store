@@ -1,0 +1,97 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import { listShipments, deleteShipment } from '../../lib/store.js';
+import { USING_SHEETS } from '../../lib/config.js';
+
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  await deleteShipment(form.get('tracking'));
+  return Astro.redirect('/admin?deleted=1');
+}
+
+const search = (Astro.url.searchParams.get('q') ?? '').trim().toLowerCase();
+const deleted = Astro.url.searchParams.has('deleted');
+
+let shipments = [];
+let error = '';
+
+try {
+  shipments = await listShipments();
+} catch (e) {
+  error = `Could not read the sheet: ${e.message}`;
+}
+
+if (search) {
+  shipments = shipments.filter((s) =>
+    [s.tracking, s.customer, s.destination, s.status]
+      .join(' ')
+      .toLowerCase()
+      .includes(search),
+  );
+}
+---
+
+<Layout title="Admin · Shipments" admin={true}>
+  <div class="stack" style="justify-content:space-between; margin-bottom:0.5rem">
+    <h1 style="margin:0">Shipments</h1>
+    <a class="button" href="/admin/new">+ Add shipment</a>
+  </div>
+  <p class="subtitle">
+    {USING_SHEETS
+      ? 'Connected to your Google Sheet. Edits here write straight into it.'
+      : 'Demo mode — edits are saved to data/demo-data.json, not to Google Sheets.'}
+  </p>
+
+  {deleted && <p class="notice ok">Shipment deleted.</p>}
+  {error && <p class="notice error">{error}</p>}
+
+  <form method="get" class="card">
+    <div class="stack">
+      <div style="flex:1 1 240px">
+        <label for="q">Search</label>
+        <input id="q" name="q" value={search} placeholder="Tracking number, customer, city…" />
+      </div>
+      <button class="primary" type="submit" style="align-self:flex-end">Search</button>
+      {search && <a class="muted" href="/admin" style="align-self:flex-end; padding-bottom:0.7rem">Clear</a>}
+    </div>
+  </form>
+
+  <div class="card">
+    {shipments.length === 0 ? (
+      <p class="muted">No shipments yet. Use “Add shipment” to create the first one.</p>
+    ) : (
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Tracking</th>
+              <th>Customer</th>
+              <th>Route</th>
+              <th>Status</th>
+              <th>Updated</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {shipments.map((s) => (
+              <tr>
+                <td><a href={`/admin/${encodeURIComponent(s.tracking)}`}>{s.tracking}</a></td>
+                <td>{s.customer}</td>
+                <td class="muted">{s.origin} → {s.destination}</td>
+                <td><StatusBadge status={s.status} /></td>
+                <td class="muted">{s.updated}</td>
+                <td>
+                  <form method="post" onsubmit="return confirm('Delete this shipment?')">
+                    <input type="hidden" name="tracking" value={s.tracking} />
+                    <button class="danger" type="submit">Delete</button>
+                  </form>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    )}
+  </div>
+</Layout>
