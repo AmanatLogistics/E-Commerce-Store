@@ -149,7 +149,13 @@ read correctly.
 - Checkout locks the product rows (`SELECT … FOR UPDATE`) inside a transaction,
   so two shoppers cannot buy the same last piece.
 - Uploads are checked for size, extension and actual image content, then stored
-  under a random filename.
+  under a random filename. A photo that arrives alongside a validation error is
+  deleted rather than left orphaned in the folder.
+- `uploads/.htaccess` stops the web server running anything from that folder,
+  whichever way PHP is wired up.
+- The session cookie is set HttpOnly and SameSite=Lax, strict session ids are
+  on, and the cookie marks itself Secure once the site is served over HTTPS.
+  Signing in and out both regenerate the session id.
 - The tables are InnoDB, which the transaction and the foreign keys need.
 - The sample product photos are generated geometric patterns, not photographs.
   Replace them from the admin panel.

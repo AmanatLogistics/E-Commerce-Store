@@ -113,6 +113,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $new_image = store_upload($_FILES['image'] ?? [], $errors);
 
+    // The photo is already on disk by now. If some other field failed, the row
+    // is never written, so bin the file rather than leaving an orphan behind.
+    if ($errors && $new_image !== null && is_file(UPLOAD_DIR . '/' . $new_image)) {
+        @unlink(UPLOAD_DIR . '/' . $new_image);
+        $new_image = null;
+    }
+
     if (!$errors) {
         if ($editing) {
             $image = $new_image ?? $existing['image'];

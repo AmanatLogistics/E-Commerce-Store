@@ -7,6 +7,15 @@
 require_once __DIR__ . '/../config/db.php';
 
 if (session_status() === PHP_SESSION_NONE) {
+    // Settled before the cookie is issued: no JavaScript access, no sending it
+    // along with cross-site requests, and no honouring a session id we never
+    // handed out. Marked secure automatically once the site is on HTTPS.
+    ini_set('session.use_strict_mode', '1');
+    session_set_cookie_params([
+        'httponly' => true,
+        'samesite' => 'Lax',
+        'secure'   => !empty($_SERVER['HTTPS']),
+    ]);
     session_start();
 }
 

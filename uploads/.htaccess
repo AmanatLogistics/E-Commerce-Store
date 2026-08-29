@@ -1,0 +1,16 @@
+# This folder holds product photos and nothing else. Even if someone finds a
+# way to write a script here, the web server must never run it.
+
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# Works regardless of how PHP is wired up (mod_php, FPM, CGI).
+RemoveHandler .php .phtml .php3 .php4 .php5 .php7 .php8 .phar
+RemoveType .php .phtml .php3 .php4 .php5 .php7 .php8 .phar
