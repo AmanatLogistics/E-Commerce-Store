@@ -1,0 +1,779 @@
+/* =========================================================================
+   Meenakar — storefront
+   Palette : cobalt underglaze on porcelain, the colours of Multani pottery
+   Type    : Rozha One (fat-face didone) for the wordmark, headings, prices
+             Archivo (grotesque, variable width) for everything else
+   Signature: the tile wall — products sit in a continuous grid separated by
+             1px cobalt seams, and hovering floods a tile solid cobalt.
+             No rounded corners and no shadows anywhere in this file.
+   ========================================================================= */
+
+:root {
+    /* ---- the six ---- */
+    --ink:       #101A33;
+    --cobalt:    #1B44A6;
+    --firozi:    #0F7D7A;
+    --brass:     #A9761B;
+    --porcelain: #E4E9F2;
+    --glaze:     #FBFCFE;
+
+    /* same six as channels, so every tint below is derived, never invented */
+    --ink-rgb:       16 26 51;
+    --cobalt-rgb:    27 68 166;
+    --firozi-rgb:    15 125 122;
+    --brass-rgb:     169 118 27;
+    --porcelain-rgb: 228 233 242;
+    --glaze-rgb:     251 252 254;
+
+    /* ---- derived ---- */
+    --seam:       rgb(var(--cobalt-rgb) / .22);
+    --seam-soft:  rgb(var(--cobalt-rgb) / .12);
+    --mute:       rgb(var(--ink-rgb) / .62);
+    --faint:      rgb(var(--ink-rgb) / .38);
+
+    /* ---- type ---- */
+    --display: 'Rozha One', 'Playfair Display', Georgia, serif;
+    --ui: 'Archivo', -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+    --measure: 62ch;
+    --pad: clamp(1rem, 4vw, 3rem);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+    margin: 0;
+    background: var(--porcelain);
+    color: var(--ink);
+    font-family: var(--ui);
+    font-size: 16px;
+    line-height: 1.6;
+    font-variant-numeric: tabular-nums;
+}
+
+img { max-width: 100%; display: block; }
+
+a { color: var(--cobalt); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:hover { color: var(--ink); }
+
+/* One focus treatment for the whole shop: brass, so it stays visible on
+   porcelain and on a flooded cobalt tile alike. */
+:focus-visible {
+    outline: 3px solid var(--brass);
+    outline-offset: 2px;
+}
+
+h1, h2, h3 {
+    font-family: var(--display);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: .005em;
+    margin: 0;
+}
+
+.shell {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding-inline: var(--pad);
+}
+
+/* The label voice: small, wide, quiet. Used for categories and field names. */
+.eyebrow {
+    font-size: .688rem;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    font-stretch: 96%;
+    color: var(--firozi);
+    margin: 0;
+}
+
+/* ------------------------------------------------------------ price ---- */
+
+.price {
+    display: inline-flex;
+    align-items: baseline;
+    gap: .3em;
+    color: inherit;
+    white-space: nowrap;
+}
+.price__unit {
+    font-family: var(--ui);
+    font-size: .625em;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    opacity: .7;
+}
+.price__figure {
+    font-family: var(--display);
+    font-size: 1.5em;
+    line-height: 1;
+}
+
+/* ----------------------------------------------------------- masthead -- */
+
+.topbar {
+    background: var(--ink);
+    color: rgb(var(--porcelain-rgb) / .8);
+    font-size: .75rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    font-stretch: 92%;
+}
+.topbar__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: .5rem;
+}
+
+.masthead {
+    background: var(--glaze);
+    border-bottom: 1px solid var(--seam);
+}
+.masthead__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1.15rem;
+}
+
+.wordmark {
+    font-family: var(--display);
+    font-size: clamp(1.75rem, 4vw, 2.375rem);
+    line-height: 1;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: .01em;
+}
+.wordmark:hover { color: var(--cobalt); }
+.wordmark small {
+    display: block;
+    font-family: var(--ui);
+    font-size: .625rem;
+    font-weight: 500;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--mute);
+    margin-top: .3rem;
+}
+
+.cart-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: .5rem;
+    font-weight: 600;
+    font-size: .875rem;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--ink);
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    padding: .6rem 1rem;
+}
+.cart-link:hover { background: var(--ink); color: var(--porcelain); }
+.cart-link__count { font-family: var(--display); font-size: 1.15rem; line-height: 1; }
+
+/* ------------------------------------------------- search: top course -- */
+
+.searchbar { background: var(--glaze); border-bottom: 1px solid var(--seam); }
+.searchbar__form {
+    display: flex;
+    align-items: stretch;
+    border-inline: 1px solid var(--seam);
+}
+.searchbar__input {
+    flex: 1;
+    min-width: 0;
+    border: 0;
+    background: transparent;
+    font-family: var(--ui);
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    color: var(--ink);
+    padding: 1.15rem 1.25rem;
+}
+.searchbar__input::placeholder { color: var(--faint); }
+.searchbar__input:focus { outline: 0; background: rgb(var(--cobalt-rgb) / .05); }
+.searchbar__go {
+    border: 0;
+    border-left: 1px solid var(--seam);
+    background: transparent;
+    font-family: var(--ui);
+    font-size: .8125rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--cobalt);
+    padding-inline: 1.5rem;
+    cursor: pointer;
+}
+.searchbar__go:hover { background: var(--cobalt); color: var(--glaze); }
+.searchbar__form:focus-within { box-shadow: inset 0 -2px 0 0 var(--cobalt); }
+
+/* Category strip — plain text, divided by the same seam rule. */
+.categories {
+    border-bottom: 1px solid var(--seam);
+    background: var(--glaze);
+}
+/* Pull the strip in by one link's padding so the first label lines up
+   with the wordmark rather than sitting one indent to its right. */
+.categories__inner {
+    max-width: 1240px;
+    margin-inline: auto;
+    display: flex;
+    flex-wrap: wrap;
+    padding-inline: max(0px, calc(var(--pad) - 1.15rem));
+}
+.categories a {
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    font-stretch: 92%;
+    color: var(--mute);
+    text-decoration: none;
+    padding: .8rem 1.15rem;
+    border-right: 1px solid var(--seam-soft);
+}
+.categories a:hover { color: var(--cobalt); background: rgb(var(--cobalt-rgb) / .06); }
+.categories a[aria-current='true'] { color: var(--glaze); background: var(--cobalt); }
+
+/* ------------------------------------------------- the wall (signature) - */
+
+.wall-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: clamp(2rem, 5vw, 3.25rem) 0 1.25rem;
+}
+.wall-head h1 { font-size: clamp(2rem, 5.5vw, 3.25rem); }
+.wall-head p { margin: 0; color: var(--mute); font-size: .875rem; }
+
+.wall {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    /* Each tile draws its own right and bottom grout line; the wall draws the
+       top and left. A short last row simply ends, like an unfinished course. */
+    border-top: 1px solid var(--seam);
+    border-left: 1px solid var(--seam);
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.tile {
+    --tile-bg: var(--glaze);
+    --tile-fg: var(--ink);
+    --tile-mute: var(--mute);
+    --tile-accent: var(--firozi);
+    --tile-warn: var(--brass);
+    --tile-well: var(--porcelain);
+    --tile-blank: var(--seam);
+
+    border-right: 1px solid var(--seam);
+    border-bottom: 1px solid var(--seam);
+    display: flex;
+    flex-direction: column;
+    background: var(--tile-bg);
+    color: var(--tile-fg);
+    text-decoration: none;
+    transition: background .16s ease;
+}
+/* The signature: the whole tile floods, photo well included. */
+.tile:hover, .tile:focus-visible {
+    --tile-bg: var(--cobalt);
+    --tile-fg: var(--porcelain);
+    --tile-mute: rgb(var(--porcelain-rgb) / .72);
+    --tile-accent: rgb(var(--porcelain-rgb) / .72);
+    --tile-warn: rgb(var(--porcelain-rgb) / .9);
+    --tile-well: var(--cobalt);
+    --tile-blank: rgb(var(--porcelain-rgb) / .3);
+}
+
+.thumb {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: var(--tile-well, var(--porcelain));
+    overflow: hidden;
+    transition: background .16s ease;
+}
+.thumb img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    transition: opacity .16s ease;
+}
+/* On the flood, the photo drops to a monochrome layer inside the cobalt. */
+.tile:hover .thumb img, .tile:focus-visible .thumb img {
+    mix-blend-mode: luminosity;
+    opacity: .45;
+}
+.thumb__blank {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    font-family: var(--display);
+    font-size: clamp(3rem, 8vw, 4.5rem);
+    color: var(--tile-blank, var(--seam));
+    background: transparent;
+}
+
+.tile__body {
+    padding: 1rem 1.15rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: .45rem;
+    flex: 1;
+}
+.tile__body .eyebrow { color: var(--tile-accent); }
+.tile__name {
+    font-family: var(--ui);
+    font-size: .9375rem;
+    font-weight: 500;
+    line-height: 1.35;
+    margin: 0;
+    color: var(--tile-fg);
+}
+.tile__foot {
+    margin-top: auto;
+    padding-top: .5rem;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .75rem;
+}
+.tile__stock { font-size: .6875rem; letter-spacing: .1em; text-transform: uppercase; color: var(--tile-mute); }
+.tile__stock--low { color: var(--tile-warn); font-weight: 600; }
+
+/* ------------------------------------------------------- product page -- */
+
+.crumbs {
+    font-size: .75rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--mute);
+    padding-block: 1.25rem;
+}
+.crumbs--center { text-align: center; }
+.crumbs a { color: var(--mute); text-decoration: none; }
+.crumbs a:hover { color: var(--cobalt); text-decoration: underline; }
+
+.product {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(320px, .95fr);
+    gap: 1px;
+    background: var(--seam);
+    border: 1px solid var(--seam);
+    margin-bottom: 1px;
+}
+.product__figure {
+    background: var(--porcelain);
+    aspect-ratio: 4 / 5;
+    position: relative;
+    overflow: hidden;
+}
+.product__figure img { width: 100%; height: 100%; object-fit: cover; }
+
+.chit {
+    background: var(--glaze);
+    padding: clamp(1.5rem, 3.5vw, 2.75rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.15rem;
+}
+.chit h1 { font-size: clamp(1.875rem, 4vw, 2.75rem); }
+.chit .price { font-size: 1.5rem; }
+
+.stockline {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    font-size: .8125rem;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+.stockline::before {
+    content: '';
+    width: .55rem; height: .55rem;
+    background: currentColor;
+}
+.stockline--in { color: var(--firozi); }
+.stockline--low { color: var(--brass); }
+.stockline--out { color: var(--mute); }
+
+.chit__meta {
+    border-top: 1px solid var(--seam-soft);
+    padding-top: 1rem;
+    font-size: .8125rem;
+    color: var(--mute);
+    display: grid;
+    gap: .35rem;
+}
+
+.description {
+    background: var(--glaze);
+    border: 1px solid var(--seam);
+    padding: clamp(1.5rem, 3.5vw, 2.75rem);
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+    gap: clamp(1rem, 3vw, 2.5rem);
+}
+.description h2 { font-size: 1.5rem; }
+.description p { max-width: var(--measure); margin: 0; white-space: pre-line; font-size: 1.0625rem; }
+
+/* ----------------------------------------------------- forms & buttons - */
+
+.field { display: grid; gap: .4rem; margin-bottom: 1.15rem; }
+.field label {
+    font-size: .6875rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--mute);
+}
+.field input, .field textarea, .field select {
+    font-family: var(--ui);
+    font-size: 1rem;
+    color: var(--ink);
+    background: var(--glaze);
+    border: 1px solid var(--seam);
+    padding: .75rem .85rem;
+    width: 100%;
+}
+.field textarea { resize: vertical; min-height: 7rem; line-height: 1.55; }
+.field input:focus, .field textarea:focus, .field select:focus {
+    outline: 0;
+    border-color: var(--cobalt);
+    box-shadow: inset 0 0 0 1px var(--cobalt);
+}
+.field--bad input, .field--bad textarea { border-color: var(--brass); }
+.field label .opt { text-transform: none; letter-spacing: 0; font-weight: 400; }
+.field__hint { font-size: .8125rem; color: var(--mute); }
+.field__error { font-size: .8125rem; color: var(--brass); font-weight: 500; }
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    font-family: var(--ui);
+    font-size: .9375rem;
+    font-weight: 600;
+    letter-spacing: .02em;
+    line-height: 1;
+    padding: 1rem 1.5rem;
+    border: 1px solid var(--cobalt);
+    background: var(--cobalt);
+    color: var(--glaze);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background .14s ease, border-color .14s ease, color .14s ease;
+}
+.btn:hover { background: var(--ink); border-color: var(--ink); color: var(--porcelain); }
+.btn[disabled], .btn--off {
+    background: transparent;
+    border-color: var(--seam);
+    color: var(--faint);
+    cursor: not-allowed;
+    pointer-events: none;
+}
+.btn--wide { width: 100%; }
+.btn--quiet {
+    background: transparent;
+    border-color: var(--ink);
+    color: var(--ink);
+}
+.btn--quiet:hover { background: var(--ink); color: var(--porcelain); }
+.btn--small { padding: .6rem 1rem; font-size: .8125rem; }
+
+/* Quantity stepper — three squares butted against one another. */
+.stepper {
+    display: inline-flex;
+    justify-self: start;
+    border: 1px solid var(--seam);
+    background: var(--glaze);
+}
+.stepper button {
+    width: 2.75rem;
+    border: 0;
+    background: transparent;
+    font-family: var(--ui);
+    font-size: 1.125rem;
+    color: var(--ink);
+    cursor: pointer;
+}
+.stepper button:hover { background: var(--cobalt); color: var(--glaze); }
+.stepper input {
+    width: 3.25rem;
+    border: 0;
+    border-inline: 1px solid var(--seam);
+    background: transparent;
+    text-align: center;
+    font-family: var(--ui);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    padding-block: .7rem;
+    -moz-appearance: textfield;
+}
+.stepper input::-webkit-outer-spin-button,
+.stepper input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.stepper input:focus { outline: 0; background: rgb(var(--cobalt-rgb) / .08); }
+
+/* -------------------------------------------------------------- cart --- */
+
+.cart-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 22rem);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+.lines { border: 1px solid var(--seam); background: var(--glaze); }
+.line {
+    display: grid;
+    grid-template-columns: 5.5rem minmax(0, 1fr) auto auto auto;
+    gap: 1.15rem;
+    align-items: center;
+    padding: 1.15rem;
+    border-bottom: 1px solid var(--seam-soft);
+}
+.line:last-child { border-bottom: 0; }
+.line__thumb { width: 5.5rem; aspect-ratio: 1; background: var(--porcelain); position: relative; overflow: hidden; }
+.line__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.line__thumb .thumb__blank { font-size: 2rem; }
+.line__name { font-weight: 500; text-decoration: none; color: var(--ink); }
+.line__name:hover { color: var(--cobalt); }
+.line__unit { font-size: .8125rem; color: var(--mute); }
+.line__total .price { font-size: 1.25rem; }
+.line__drop {
+    border: 0;
+    background: transparent;
+    font-family: var(--ui);
+    font-size: .75rem;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--mute);
+    cursor: pointer;
+    padding: .35rem;
+}
+.line__drop:hover { color: var(--brass); text-decoration: underline; }
+.line__qty { display: flex; align-items: center; gap: .5rem; }
+
+.summary {
+    border: 1px solid var(--seam);
+    background: var(--glaze);
+    padding: 1.5rem;
+    position: sticky;
+    top: 1.5rem;
+}
+.summary h2 { font-size: 1.5rem; margin-bottom: 1rem; }
+.summary__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: .5rem;
+    font-size: .9375rem;
+    color: var(--mute);
+}
+.summary__row--total {
+    border-top: 1px solid var(--seam);
+    margin-top: .5rem;
+    padding-top: 1rem;
+    color: var(--ink);
+    align-items: baseline;
+}
+.summary__row--total span:first-child {
+    font-size: .6875rem;
+    font-weight: 600;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+}
+.summary__row--total .price { font-size: 1.5rem; }
+.summary .btn { margin-top: 1.25rem; }
+.summary .btn + .btn { margin-top: .6rem; }
+.summary__note { font-size: .8125rem; color: var(--mute); margin: 1rem 0 0; }
+
+.summary__mini { display: grid; gap: .6rem; margin-bottom: 1rem; }
+.summary__mini div { display: flex; justify-content: space-between; gap: 1rem; font-size: .875rem; }
+.summary__mini span:first-child { color: var(--mute); }
+.summary__mini span:last-child { white-space: nowrap; flex: 0 0 auto; }
+
+/* ---------------------------------------------------------- checkout --- */
+
+.checkout-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(280px, 22rem);
+    gap: clamp(1.5rem, 4vw, 3rem);
+    align-items: start;
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+.panel { border: 1px solid var(--seam); background: var(--glaze); padding: clamp(1.25rem, 3vw, 2rem); }
+.panel h2 { font-size: 1.5rem; margin-bottom: 1.25rem; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1.15rem; }
+
+.cod {
+    border: 1px solid var(--seam);
+    padding: 1rem 1.15rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    gap: .85rem;
+    align-items: flex-start;
+}
+.cod strong { display: block; font-size: .9375rem; }
+.cod span { font-size: .8125rem; color: var(--mute); }
+.cod::before {
+    content: '';
+    width: .55rem; height: .55rem;
+    background: var(--firozi);
+    margin-top: .45rem;
+    flex: 0 0 auto;
+}
+
+/* ------------------------------------------------------ order success -- */
+
+.receipt {
+    border: 1px solid var(--seam);
+    background: var(--glaze);
+    text-align: center;
+    padding: clamp(2.5rem, 8vw, 5rem) var(--pad);
+    margin: clamp(2rem, 5vw, 3.5rem) 0 1rem;
+}
+.receipt h1 { font-size: clamp(1.75rem, 5vw, 2.75rem); margin-bottom: .75rem; }
+.receipt__number {
+    font-family: var(--display);
+    font-size: clamp(3.5rem, 14vw, 7rem);
+    line-height: 1;
+    color: var(--cobalt);
+    margin: 1.5rem 0 .5rem;
+}
+.receipt p { color: var(--mute); max-width: 46ch; margin: 0 auto 1.5rem; }
+
+.receipt__lines {
+    border-top: 1px solid var(--seam);
+    margin-top: 2.5rem;
+    padding-top: 1.5rem;
+    text-align: left;
+    max-width: 34rem;
+    margin-inline: auto;
+}
+.receipt__lines div {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-block: .45rem;
+    font-size: .9375rem;
+}
+.receipt__lines div:last-child {
+    border-top: 1px solid var(--seam);
+    margin-top: .5rem;
+    padding-top: .85rem;
+    font-weight: 600;
+}
+
+/* ------------------------------------------------- flashes & emptiness - */
+
+.flash {
+    border: 1px solid var(--seam);
+    border-left-width: 4px;
+    background: var(--glaze);
+    padding: .85rem 1.15rem;
+    margin-top: 1.25rem;
+    font-size: .9375rem;
+}
+.flash--ok { border-left-color: var(--firozi); }
+.flash--warn { border-left-color: var(--brass); }
+.flash--error {
+    background: var(--ink);
+    border-color: var(--ink);
+    border-left-color: var(--brass);
+    color: var(--porcelain);
+}
+
+.empty {
+    border: 1px solid var(--seam);
+    background: var(--glaze);
+    padding: clamp(2.5rem, 8vw, 4.5rem) var(--pad);
+    text-align: center;
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+}
+.empty h2 { font-size: clamp(1.5rem, 4vw, 2.25rem); margin-bottom: .6rem; }
+.empty p { color: var(--mute); max-width: 40ch; margin: 0 auto 1.5rem; }
+
+/* ------------------------------------------------------------ footer --- */
+
+.footer {
+    background: var(--ink);
+    color: rgb(var(--porcelain-rgb) / .74);
+    padding-block: clamp(2.5rem, 6vw, 4rem);
+    font-size: .875rem;
+}
+.footer__row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+.footer h3 {
+    font-family: var(--ui);
+    font-size: .6875rem;
+    font-weight: 600;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: rgb(var(--porcelain-rgb) / .5);
+    margin-bottom: .75rem;
+}
+.footer__mark { font-family: var(--display); font-size: 1.75rem; color: var(--porcelain); line-height: 1; }
+.footer a { color: rgb(var(--porcelain-rgb) / .74); text-decoration: none; }
+.footer a:hover { color: var(--glaze); text-decoration: underline; }
+.footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: .4rem; }
+
+/* -------------------------------------------------------- responsive --- */
+
+@media (max-width: 900px) {
+    .product { grid-template-columns: 1fr; }
+    .description { grid-template-columns: 1fr; gap: .75rem; }
+    .product__figure { aspect-ratio: 1 / 1; }
+    .cart-grid, .checkout-grid { grid-template-columns: 1fr; }
+    .summary { position: static; }
+}
+
+@media (max-width: 640px) {
+    .wall { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .tile__body { padding: .8rem .85rem 1rem; }
+    /* Two narrow columns cannot hold a price and a stock note side by side. */
+    .tile__foot { flex-direction: column; align-items: flex-start; gap: .3rem; }
+
+    /* The category strip scrolls sideways rather than stacking into three rows. */
+    .categories__inner {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    .categories__inner::-webkit-scrollbar { display: none; }
+    .categories a { white-space: nowrap; }
+    .masthead__row { flex-direction: column; align-items: flex-start; gap: .85rem; }
+    .topbar__row { font-size: .6875rem; }
+    .topbar__row span:last-child { display: none; }
+    .pair { grid-template-columns: 1fr; }
+    .line {
+        grid-template-columns: 4rem minmax(0, 1fr);
+        grid-template-areas: 'thumb name' 'qty total' 'drop drop';
+        row-gap: .85rem;
+    }
+    .line__thumb { grid-area: thumb; width: 4rem; }
+    .line__info { grid-area: name; }
+    .line__qty { grid-area: qty; }
+    .line__total { grid-area: total; justify-self: end; }
+    .line__drop { grid-area: drop; justify-self: start; padding-left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+}
